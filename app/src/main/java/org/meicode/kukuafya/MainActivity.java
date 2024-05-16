@@ -7,50 +7,35 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import org.meicode.kukuafya.MainActivity;
 import org.meicode.kukuafya.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
-
-     ActivityMainBinding binding ;
-
+    ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(bindng.getRoot);
+        setContentView(binding.getRoot());
 
-       replaceFragment(new HomeFragment());
+        replaceFragment(new HomeFragment());
         binding.bottomNavigationView.setBackground(null);
 
-        binding.buttomNavigationView.setOnItemSelectedListener(item ->{
-
-            switch (item.getItemId()) {
-                case R.id.home:
-                    replaceFragment(new HomeFragment());
-                    break;
+        binding.bottomNavigationView.setOnItemSelectedListener(item -> {
+            Fragment fragment;
+            if (item.getItemId() == R.id.home) {
+                fragment = new HomeFragment();
+            } else if (item.getItemId() == R.id.detect) {
+                fragment = new DetectFragment();
+            } else if (item.getItemId() == R.id.subscribe) {
+                fragment = new SubscribeFragment();
+            } else if (item.getItemId() == R.id.community) {
+                fragment = new CommunityFragment();
+            } else {
+                fragment = new HomeFragment(); // Default to HomeFragment
             }
-
-            switch (item.getItemId()) {
-                case R.id.detect:
-                    replaceFragment(new DetectFragment());
-                    break;
-            }
-
-            switch (item.getItemId()) {
-                case R.id.subscribe:
-                    replaceFragment(new SubscribeFragment());
-                    break;
-            }
-
-            switch (item.getItemId()) {
-                case R.id.community:
-                    replaceFragment(new CommunityFragment());
-                    break;
-            }
-
+            replaceFragment(fragment);
             return true;
         });
 
@@ -62,5 +47,4 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
     }
-
 }

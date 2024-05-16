@@ -6,7 +6,7 @@
         android:title="Home" />
 
     <item
-        android:id="@+id/Detect"
+        android:id="@+id/detect"
         android:icon="@drawable/baseline_search_24"
         android:title="Detect" />
 
@@ -18,14 +18,10 @@
 
 
     <item
-        android:id="@+id/Community"
+        android:id="@+id/community"
         android:icon="@drawable/baseline_people_24"
         android:title="Community" />
 
-    <item
-        android:id="@+id/add"
-        android:icon="@drawable/baseline_add_24"
-        android:title="Add"/>
 
 
 
