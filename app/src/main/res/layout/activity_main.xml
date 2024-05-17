@@ -49,6 +49,18 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/navigation_drawer"
+        android:layout_gravity="start"
+        android:background="@color/white"
+        app:itemIconTint="@color/lavender"
+        app:itemTextColor="@color/white"
+        android:theme="@style/ThemeOverlay.AppCompat.navTheme"
+        app:headerLayout="@layout/side_header"
+        app:menu="@menu/side_menu"/>
+
 
 </androidx.drawerlayout.widget.DrawerLayout>
 
