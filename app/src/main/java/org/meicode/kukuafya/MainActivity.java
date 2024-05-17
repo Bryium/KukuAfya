@@ -1,13 +1,17 @@
 package org.meicode.kukuafya;
 
+import android.drm.DrmStore;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+
+
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -16,11 +20,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+
 import com.google.android.material.navigation.NavigationView;
 
 import org.meicode.kukuafya.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity  {
 
     ActivityMainBinding binding;
     DrawerLayout drawerLayout;
@@ -28,14 +33,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     FragmentManager fragmentManager;
 
     ImageView menu;
+    Toolbar toolbar;
 
-    DrawerLayout login, about, logout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
 
         replaceFragment(new HomeFragment());
         binding.bottomNavigationView.setBackground(null);
@@ -59,7 +66,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return true;
         });
 
+        binding.navigationDrawer.setNavigationItemSelectedListener(item -> {
+            Fragment fragment;
+            int itemId = item.getItemId();
+            if (itemId == R.id.log_in) {
+                fragment = new LoginFragment();
+            } else if (itemId == R.id.about) {
+                fragment = new AboutFragment();
+            } else if (itemId == R.id.log_out) {
+                fragment = new LogoutFragment();
+            }
+            drawerLayout.closeDrawer(GravityCompat.START);
 
+            return true;
+        });
+
+
+    }
+
+    private void setSupportActionBar(Toolbar toolbar) {
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -69,32 +94,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentTransaction.commit();
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        Fragment fragment;
-        int itemId = menuItem.getItemId();
-        if (itemId == R.id.log_in) {
-            fragment = new LoginFragment();
-        } else if (itemId == R.id.about) {
-            fragment = new AboutFragment();
-        } else if (itemId == R.id.log_out) {
-            fragment = new LogoutFragment();
-        }
-        drawerLayout.closeDrawer(GravityCompat.START);
-
-        return true;
-    }
 
     public static void openDrawer(DrawerLayout drawerrLayout) {
-       drawerrLayout.openDrawer(GravityCompat.START);
-   }
-   public void closeDrawer(DrawerLayout drawerLayout) {
+        drawerrLayout.openDrawer(GravityCompat.START);
+    }
+    public void closeDrawer(DrawerLayout drawerLayout) {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-           drawerLayout.closeDrawer(GravityCompat.START);
+            drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.getOnBackPressedDispatcher();
-   }
+        }
 
-        
+
     }
 }
