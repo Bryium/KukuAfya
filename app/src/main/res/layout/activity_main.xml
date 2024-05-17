@@ -56,7 +56,7 @@
         android:layout_gravity="start"
         android:background="@color/white"
         app:itemIconTint="@color/lavender"
-        app:itemTextColor="@color/white"
+        app:itemTextColor="@color/black"
         android:theme="@style/ThemeOverlay.AppCompat.navTheme"
         app:headerLayout="@layout/side_header"
         app:menu="@menu/side_menu"/>

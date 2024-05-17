@@ -2,9 +2,15 @@ package org.meicode.kukuafya;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.Toast;
+import android.widget.Toolbar;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -21,6 +27,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     FragmentManager fragmentManager;
 
+    ImageView menu;
+
+    DrawerLayout login, about, logout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding.bottomNavigationView.setBackground(null);
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
+
             Fragment fragment;
             if (item.getItemId() == R.id.home) {
                 fragment = new HomeFragment();
@@ -40,12 +51,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragment = new SubscribeFragment();
             } else if (item.getItemId() == R.id.community) {
                 fragment = new CommunityFragment();
+
             } else {
-                fragment = new HomeFragment(); // Default to HomeFragment
+                fragment = new HomeFragment();
             }
             replaceFragment(fragment);
             return true;
         });
+
 
     }
 
@@ -58,6 +71,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        return false;
+        Fragment fragment;
+        int itemId = menuItem.getItemId();
+        if (itemId == R.id.log_in) {
+            fragment = new LoginFragment();
+        } else if (itemId == R.id.about) {
+            fragment = new AboutFragment();
+        } else if (itemId == R.id.log_out) {
+            fragment = new LogoutFragment();
+        }
+        drawerLayout.closeDrawer(GravityCompat.START);
+
+        return true;
+    }
+
+    public static void openDrawer(DrawerLayout drawerrLayout) {
+       drawerrLayout.openDrawer(GravityCompat.START);
+   }
+   public void closeDrawer(DrawerLayout drawerLayout) {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+           drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.getOnBackPressedDispatcher();
+   }
+
+        
     }
 }
