@@ -22,6 +22,8 @@
         android:icon="@drawable/baseline_about_24"
         android:title="About"/>
 
+    <item android:title="Communicate"/>
+
     <item
         android:id="@+id/log_out"
         android:icon="@drawable/baseline_logout_24"
