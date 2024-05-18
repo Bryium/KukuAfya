@@ -118,12 +118,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         Fragment fragment;
         int itemId = menuItem.getItemId();
-        if (itemId == R.id.log_in) {
-            fragment = new LoginFragment();
+        if (itemId == R.id.Import) {
+            fragment = new ImportFragment();
 
             if(fragment != null) {
                 replaceFragment(fragment);
             }
+
+        } else if (itemId == R.id.gallery) {
+            fragment = new GalleryFragment();
+
+            if(fragment != null) {
+                replaceFragment(fragment);
+            }
+
         } else if (itemId == R.id.about) {
             fragment = new AboutFragment();
 
