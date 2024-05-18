@@ -61,9 +61,9 @@
         android:id="@+id/inputPassword"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/input_bg"
-        android:drawableLeft="@drawable/baseline_person_24"
+        android:drawableLeft="@drawable/baseline_security_24"
         android:drawablePadding="10dp"
         android:ems="10"
         android:hint="Password"
@@ -75,6 +75,7 @@
         android:textColor="@color/white"
         android:textColorHint="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/inputEmail"
+        app:layout_constraintHorizontal_bias="0.666"
         app:layout_constraintStart_toStartOf="@+id/inputEmail"
         app:layout_constraintTop_toBottomOf="@+id/inputEmail" />
 

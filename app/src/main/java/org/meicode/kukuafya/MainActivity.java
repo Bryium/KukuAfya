@@ -1,17 +1,13 @@
 package org.meicode.kukuafya;
 
-import android.drm.DrmStore;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
-
-
-
-
-
-
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -23,7 +19,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -38,12 +33,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     ImageView menu;
 
-
     Toolbar toolbar;
 
+    private static final String PREFS_NAME = "MyPrefsFile";
+    private static final String LAST_ACTIVE_TIME = "lastActiveTime";
+    private static final long TIMEOUT_DURATION = 60 * 1000; // 60 seconds
 
-
-
+    private Handler handler;
+    private Runnable timeoutRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,13 +59,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.navigation_drawer);
         binding.navigationDrawer.setNavigationItemSelectedListener(this);
 
+        fragmentManager = getSupportFragmentManager();
+        handler = new Handler();
 
+        // Set up the timeout check
+        timeoutRunnable = () -> {
+            long lastActiveTime = getLastActiveTime();
+            long currentTime = System.currentTimeMillis();
+            long elapsedTime = currentTime - lastActiveTime;
 
+            if (elapsedTime > TIMEOUT_DURATION) {
+                // Show password prompt or login screen
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            }
+        };
+
+        // Start the timeout check after the specified duration
+        handler.postDelayed(timeoutRunnable, TIMEOUT_DURATION);
+
+        // Set the last active time when the app is created
+        setLastActiveTime(System.currentTimeMillis());
+
+        // Replace the fragment with the initial one
         replaceFragment(new HomeFragment());
         binding.bottomNavigationView.setBackground(null);
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-
             Fragment fragment;
             if (item.getItemId() == R.id.home) {
                 fragment = new HomeFragment();
@@ -78,40 +94,45 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragment = new SubscribeFragment();
             } else if (item.getItemId() == R.id.community) {
                 fragment = new CommunityFragment();
-
             } else {
                 fragment = new HomeFragment();
-
             }
             replaceFragment(fragment);
             return true;
         });
-
-
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Save the current time when the app goes into background
+        setLastActiveTime(System.currentTimeMillis());
+        // Remove the timeout check when the app goes into background
+        handler.removeCallbacks(timeoutRunnable);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Start the timeout check again when the app is resumed
+        handler.postDelayed(timeoutRunnable, TIMEOUT_DURATION);
+    }
 
     private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
     }
 
-
-    public static void openDrawer(DrawerLayout drawerrLayout) {
-        drawerrLayout.openDrawer(GravityCompat.START);
+    private void setLastActiveTime(long timeInMillis) {
+        SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
+        editor.putLong(LAST_ACTIVE_TIME, timeInMillis);
+        editor.apply();
     }
 
-    public void closeDrawer(DrawerLayout drawerLayout) {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.getOnBackPressedDispatcher();
-        }
-
-
+    private long getLastActiveTime() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        return prefs.getLong(LAST_ACTIVE_TIME, 0); // Default is 0
     }
 
     @Override
@@ -120,32 +141,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int itemId = menuItem.getItemId();
         if (itemId == R.id.Import) {
             fragment = new ImportFragment();
-
-            if(fragment != null) {
-                replaceFragment(fragment);
-            }
-
         } else if (itemId == R.id.gallery) {
             fragment = new GalleryFragment();
-
-            if(fragment != null) {
-                replaceFragment(fragment);
-            }
-
         } else if (itemId == R.id.about) {
             fragment = new AboutFragment();
-
-            if(fragment != null) {
-                replaceFragment(fragment);
-            }
         } else if (itemId == R.id.log_out) {
             fragment = new LogoutFragment();
-
-            if(fragment != null) {
-                replaceFragment(fragment);
-            }
+        } else {
+            fragment = new HomeFragment();
         }
 
+        if (fragment != null) {
+            replaceFragment(fragment);
+        }
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
