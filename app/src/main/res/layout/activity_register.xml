@@ -8,6 +8,18 @@
     android:background="@drawable/background"
     tools:context=".RegisterActivity">
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="154dp"
+        android:layout_height="146dp"
+        app:layout_constraintBottom_toTopOf="@+id/logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.474"
+        app:srcCompat="@drawable/chicken" />
+
     <TextView
         android:id="@+id/logo"
         android:layout_width="wrap_content"
@@ -20,7 +32,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintVertical_bias="0.37" />
 
     <EditText
         android:id="@+id/inputUsername"
@@ -63,7 +75,6 @@
         android:textColor="@color/white"
         android:textColorHint="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/inputUsername"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/inputUsername"
         app:layout_constraintTop_toBottomOf="@+id/inputUsername" />
 
@@ -119,16 +130,18 @@
         android:textColor="@color/white"
         android:textColorHint="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/inputConfirmPassword"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/inputConfirmPassword"
         app:layout_constraintTop_toBottomOf="@+id/inputConfirmPassword" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="120dp"
-        android:layout_height="114dp"
-        app:srcCompat="@drawable/chicken"
-        tools:layout_editor_absoluteX="-1dp"
-        tools:layout_editor_absoluteY="1dp" />
+    <TextView
+        android:id="@+id/alreadyHaveAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:text="Already have an account?"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@+id/btnRegister"
+        app:layout_constraintStart_toStartOf="@+id/btnRegister"
+        app:layout_constraintTop_toBottomOf="@+id/btnRegister" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

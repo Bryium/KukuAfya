@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="org.meicode.kukuafya" />
+                  <option name="mobileSdkAppId" value="1:366650160252:android:6da097619ff17d719b85f9" />
+                  <option name="projectId" value="kukuafya-f29e6" />
+                  <option name="projectNumber" value="366650160252" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
