@@ -1,1 +1,3 @@
-# KukuAfya
+#KukuAfya
+
+Kukuafya is an innovative online chicken disease diagnosis application designed to revolutionize chicken health management. Leveraging a sophisticated machine learning model trained on extensive datasets, the application accurately identifies diseases afflicting chickens based on captured images. By employing advanced image recognition algorithms, Kukuafya provides prompt and precise diagnoses, enabling poultry farmers to take timely preventive or curative measures. This integration of cutting-edge technology enhances efficiency and effectiveness in chicken health monitoring and management, contributing to improved poultry farming practices and overall livestock welfare.
