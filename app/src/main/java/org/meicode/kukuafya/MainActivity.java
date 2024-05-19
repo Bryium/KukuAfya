@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
@@ -58,6 +59,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = findViewById(R.id.navigation_drawer);
         binding.navigationDrawer.setNavigationItemSelectedListener(this);
+
+
+
 
         fragmentManager = getSupportFragmentManager();
         handler = new Handler();
@@ -134,6 +138,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         return prefs.getLong(LAST_ACTIVE_TIME, 0); // Default is 0
     }
+
+
+
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {

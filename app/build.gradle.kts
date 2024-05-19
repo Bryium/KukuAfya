@@ -15,7 +15,13 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("string", "apiKey", "")
+        buildConfigField("String", "apiKey", "\"AIzaSyBpEzG197R66OHsP1p48PG_8qhlbgAO-uQ\"")
+
+
+        // Enable the buildConfig feature
+        buildFeatures {
+            buildConfig = true
+        }
     }
 
     buildTypes {
@@ -32,9 +38,12 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
+
+
     viewBinding {
         enable = true
     }
+
 
 
 }
