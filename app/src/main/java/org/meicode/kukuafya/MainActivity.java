@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private static final String PREFS_NAME = "MyPrefsFile";
     private static final String LAST_ACTIVE_TIME = "lastActiveTime";
-    private static final long TIMEOUT_DURATION = 60 * 1000; // 60 seconds
+    private static final long TIMEOUT_DURATION = 30 * 1000; // 30 seconds
 
     private Handler handler;
     private Runnable timeoutRunnable;
@@ -60,9 +61,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.navigation_drawer);
         binding.navigationDrawer.setNavigationItemSelectedListener(this);
 
-
-
-
         fragmentManager = getSupportFragmentManager();
         handler = new Handler();
 
@@ -75,11 +73,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (elapsedTime > TIMEOUT_DURATION) {
                 // Show password prompt or login screen
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                finish(); // Finish the MainActivity to prevent returning to it without re-authentication
             }
         };
 
         // Start the timeout check after the specified duration
-        handler.postDelayed(timeoutRunnable, TIMEOUT_DURATION);
+        resetTimeout();
 
         // Set the last active time when the app is created
         setLastActiveTime(System.currentTimeMillis());
@@ -119,7 +118,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
         super.onResume();
         // Start the timeout check again when the app is resumed
-        handler.postDelayed(timeoutRunnable, TIMEOUT_DURATION);
+        resetTimeout();
+    }
+
+    @Override
+    public void onUserInteraction() {
+        super.onUserInteraction();
+        // Reset the timeout timer on user interaction
+        resetTimeout();
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -139,9 +145,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return prefs.getLong(LAST_ACTIVE_TIME, 0); // Default is 0
     }
 
-
-
-
+    private void resetTimeout() {
+        // Save the current time as the last active time
+        setLastActiveTime(System.currentTimeMillis());
+        // Remove any previous callbacks
+        handler.removeCallbacks(timeoutRunnable);
+        // Post the timeout runnable with the specified duration
+        handler.postDelayed(timeoutRunnable, TIMEOUT_DURATION);
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
