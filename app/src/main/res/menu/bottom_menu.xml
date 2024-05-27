@@ -12,9 +12,9 @@
 
 
     <item
-        android:id="@+id/subscribe"
+        android:id="@+id/treatment"
         android:icon="@drawable/baseline_subscriptions_24"
-        android:title="Subscribe" />
+        android:title="Treatment" />
 
 
     <item

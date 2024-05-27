@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/lavender"
-    tools:context=".SubscribeFragment">
+    tools:context=".TreatmentFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Subscribe"
+        android:text="Treatment"
         android:gravity="center"
         android:textSize="30sp"
         android:textColor="@color/white"/>

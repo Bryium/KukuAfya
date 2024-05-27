@@ -1,6 +1,8 @@
 package org.meicode.kukuafya;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -82,5 +84,22 @@ public class LoginActivity extends AppCompatActivity {
                 });
 
 
+    }
+
+    private void handleLogin() {
+        String userName = "";
+        String userEmail = "";
+
+        // Save user information to Shared Preferences
+        SharedPreferences sharedPref = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("USER_NAME", userName);
+        editor.putString("USER_EMAIL", userEmail);
+        editor.apply();
+
+        // Navigate to MainActivity
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

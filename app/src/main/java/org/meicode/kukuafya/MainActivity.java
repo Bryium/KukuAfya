@@ -1,20 +1,19 @@
 package org.meicode.kukuafya;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.TextView;
+
 import androidx.appcompat.widget.Toolbar;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -49,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -93,8 +93,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragment = new HomeFragment();
             } else if (item.getItemId() == R.id.detect) {
                 fragment = new DetectFragment();
-            } else if (item.getItemId() == R.id.subscribe) {
-                fragment = new SubscribeFragment();
+            } else if (item.getItemId() == R.id.treatment) {
+                fragment = new TreatmentFragment();
             } else if (item.getItemId() == R.id.community) {
                 fragment = new CommunityFragment();
             } else {
@@ -177,4 +177,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private void updateNavigationHeader() {
+        // Retrieve user information from Shared Preferences
+        SharedPreferences sharedPref = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        String userName = sharedPref.getString("USER_NAME", "Default Name");
+        String userEmail = sharedPref.getString("USER_EMAIL", "Default Email");
+
+        // Find the header view and update it with user information
+        NavigationView navigationView = findViewById(R.id.navigation_drawer);
+        View headerView = navigationView.getHeaderView(0);
+        TextView navHeaderTitle = headerView.findViewById(R.id.nav_header_title);
+        TextView navHeaderSubtitle = headerView.findViewById(R.id.nav_header_subtitle);
+        navHeaderTitle.setText(userName);
+        navHeaderSubtitle.setText(userEmail);
+
+
+
+    }
+
+
+
 }
