@@ -21,6 +21,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import org.meicode.kukuafya.databinding.ActivityMainBinding;
@@ -51,9 +52,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_drawer);
 
-
+        //toolbar
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //floating action bar
+        FloatingActionButton fab = findViewById(R.id.fab);
+
+
+
+
 
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, binding.toolbar, R.string.open_nav, R.string.close_nav);
@@ -81,7 +89,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         usernameTextView.setText(userName);
         userEmailTextView.setText(userEmail);
 
+        // Handle click event
+        // Handle click event
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Perform undo last action
+                undoLastAction();
+            }
+        });
 
+
+        // Handle long press event
+        fab.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                // Navigate to the HomeFragment
+                replaceFragment(new HomeFragment());
+                return true; // Indicates that the long click event is consumed
+            }
+        });
 
 
 
@@ -125,6 +152,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return true;
         });
     }
+
+    private void undoLastAction() {
+    }
+
 
     @Override
     protected void onPause() {
@@ -212,5 +243,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getSupportActionBar().show();
         }
     }
+
+
 
 }
