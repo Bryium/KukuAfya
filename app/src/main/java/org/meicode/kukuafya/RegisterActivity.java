@@ -15,7 +15,6 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -51,7 +50,7 @@ public class RegisterActivity extends AppCompatActivity {
                 } else if (!password.equals(confirmPassword)) {
                     Toast.makeText(RegisterActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
                 } else {
-                    registerUser(email, password);
+                    registerUser(username, email, password);
                 }
             }
         });
@@ -64,7 +63,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void registerUser(String email, String password) {
+    private void registerUser(String username, String email, String password) {
         mAuth.fetchSignInMethodsForEmail(email)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -77,6 +76,10 @@ public class RegisterActivity extends AppCompatActivity {
                                     .addOnCompleteListener(RegisterActivity.this, registrationTask -> {
                                         if (registrationTask.isSuccessful()) {
                                             FirebaseUser user = mAuth.getCurrentUser();
+                                            if (user != null) {
+                                                // Save user information to SharedPreferences
+                                                saveUserInfo(username, email);
+                                            }
                                             // Display toast message for successful registration
                                             Toast.makeText(RegisterActivity.this, "Registered successfully", Toast.LENGTH_SHORT).show();
                                             // Redirect to login page
@@ -96,6 +99,12 @@ public class RegisterActivity extends AppCompatActivity {
         finish();
     }
 
-
-
+    private void saveUserInfo(String username, String email) {
+        // Save user information to SharedPreferences
+        SharedPreferences sharedPref = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("USER_NAME", username);
+        editor.putString("USER_EMAIL", email);
+        editor.apply();
+    }
 }

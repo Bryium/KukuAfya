@@ -1,8 +1,6 @@
 package org.meicode.kukuafya;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -14,9 +12,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -62,27 +60,12 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Login successful
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        if (user != null) {
-                            String userName = user.getDisplayName();
-                            String userEmail = user.getEmail();
-                            saveUserInfo(userName, userEmail);
-                            navigateToMainActivity();
-                        }
+                        navigateToMainActivity();
                     } else {
                         // Login failed
                         handleLoginFailure(task.getException());
                     }
                 });
-    }
-
-    private void saveUserInfo(String userName, String userEmail) {
-        // Save user information to SharedPreferences
-        SharedPreferences sharedPref = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("USER_NAME", userName);
-        editor.putString("USER_EMAIL", userEmail);
-        editor.apply();
     }
 
     private void navigateToMainActivity() {
