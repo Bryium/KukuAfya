@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,7 +26,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
@@ -66,40 +64,41 @@ public class LoginActivity extends AppCompatActivity {
                         // Login successful
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                            finish();
+                            String userName = user.getDisplayName();
+                            String userEmail = user.getEmail();
+                            saveUserInfo(userName, userEmail);
+                            navigateToMainActivity();
                         }
                     } else {
                         // Login failed
-                        try {
-                            throw task.getException();
-                        } catch (FirebaseAuthInvalidUserException e) {
-                            Toast.makeText(LoginActivity.this, "You are not a member. You need to register.", Toast.LENGTH_SHORT).show();
-                        } catch (FirebaseAuthInvalidCredentialsException e) {
-                            Toast.makeText(LoginActivity.this, "Invalid email or password.", Toast.LENGTH_SHORT).show();
-                        } catch (Exception e) {
-                            Toast.makeText(LoginActivity.this, "Login failed. Please try again.", Toast.LENGTH_SHORT).show();
-                        }
+                        handleLoginFailure(task.getException());
                     }
                 });
-
-
     }
 
-    private void handleLogin() {
-        String userName = "";
-        String userEmail = "";
-
-        // Save user information to Shared Preferences
+    private void saveUserInfo(String userName, String userEmail) {
+        // Save user information to SharedPreferences
         SharedPreferences sharedPref = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("USER_NAME", userName);
         editor.putString("USER_EMAIL", userEmail);
         editor.apply();
+    }
 
+    private void navigateToMainActivity() {
         // Navigate to MainActivity
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void handleLoginFailure(Exception exception) {
+        if (exception instanceof FirebaseAuthInvalidUserException) {
+            Toast.makeText(LoginActivity.this, "You've not registered.", Toast.LENGTH_SHORT).show();
+        } else if (exception instanceof FirebaseAuthInvalidCredentialsException) {
+            Toast.makeText(LoginActivity.this, "Invalid email or password.", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(LoginActivity.this, "Login failed. Please try again.", Toast.LENGTH_SHORT).show();
+        }
     }
 }

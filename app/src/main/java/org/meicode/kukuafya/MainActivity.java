@@ -5,12 +5,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -29,19 +27,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     ActivityMainBinding binding;
     DrawerLayout drawerLayout;
-
+    NavigationView navigationView;
     FragmentManager fragmentManager;
+    Handler handler;
+    Runnable timeoutRunnable;
 
-    ImageView menu;
-
-    Toolbar toolbar;
-
-    private static final String PREFS_NAME = "MyPrefsFile";
+    private static final String PREFS_NAME = "UserPrefs";
     private static final String LAST_ACTIVE_TIME = "lastActiveTime";
     private static final long TIMEOUT_DURATION = 30 * 1000; // 30 seconds
-
-    private Handler handler;
-    private Runnable timeoutRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,20 +42,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         drawerLayout = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav);
+        navigationView = findViewById(R.id.navigation_drawer);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, binding.toolbar, R.string.open_nav, R.string.close_nav);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.navigation_drawer);
-        binding.navigationDrawer.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(this);
 
         fragmentManager = getSupportFragmentManager();
         handler = new Handler();
+
+        // Inflate the navigation header layout
+        View headerView = navigationView.getHeaderView(0);
+        TextView usernameTextView = headerView.findViewById(R.id.nav_header_title);
+        TextView userEmailTextView = headerView.findViewById(R.id.nav_header_subtitle);
+
+        // Retrieve user information from SharedPreferences
+        SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        String userName = sharedPref.getString("USER_NAME", "Username");
+        String userEmail = sharedPref.getString("USER_EMAIL", "email@example.com");
+
+        // Update UI with user information
+        usernameTextView.setText(userName);
+        userEmailTextView.setText(userEmail);
 
         // Set up the timeout check
         timeoutRunnable = () -> {
@@ -177,25 +181,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
-
-    private void updateNavigationHeader() {
-        // Retrieve user information from Shared Preferences
-        SharedPreferences sharedPref = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        String userName = sharedPref.getString("USER_NAME", "Default Name");
-        String userEmail = sharedPref.getString("USER_EMAIL", "Default Email");
-
-        // Find the header view and update it with user information
-        NavigationView navigationView = findViewById(R.id.navigation_drawer);
-        View headerView = navigationView.getHeaderView(0);
-        TextView navHeaderTitle = headerView.findViewById(R.id.nav_header_title);
-        TextView navHeaderSubtitle = headerView.findViewById(R.id.nav_header_subtitle);
-        navHeaderTitle.setText(userName);
-        navHeaderSubtitle.setText(userEmail);
-
-
-
-    }
-
-
-
 }

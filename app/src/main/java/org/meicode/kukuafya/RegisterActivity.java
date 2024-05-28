@@ -1,6 +1,8 @@
 package org.meicode.kukuafya;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -75,6 +77,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     .addOnCompleteListener(RegisterActivity.this, registrationTask -> {
                                         if (registrationTask.isSuccessful()) {
                                             FirebaseUser user = mAuth.getCurrentUser();
+                                            // Display toast message for successful registration
                                             Toast.makeText(RegisterActivity.this, "Registered successfully", Toast.LENGTH_SHORT).show();
                                             // Redirect to login page
                                             startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
@@ -92,5 +95,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         finish();
     }
+
+
 
 }

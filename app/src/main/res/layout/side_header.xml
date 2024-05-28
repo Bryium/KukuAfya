@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="176dp"
     android:gravity="top"
+    android:id="@+id/nav_header_layout"
     android:padding="16dp"
     android:background="@color/lavender"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">

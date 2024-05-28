@@ -10,15 +10,15 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Home"
         android:gravity="center"
-        android:textSize="30sp"
-        android:textColor="@color/white"/>
-    
-    
+        android:text="Home"
+        android:textColor="@color/white"
+        android:textSize="30sp" />
+
+
     <WebView
+        android:id="@+id/webView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/webView"/>
+        android:layout_height="match_parent" />
 
 </FrameLayout>
