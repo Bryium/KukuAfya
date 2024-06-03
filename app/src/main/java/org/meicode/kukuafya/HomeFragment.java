@@ -26,11 +26,17 @@ public class HomeFragment extends Fragment {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                 if (scrollY > oldScrollY) {
-                    // Scroll down, hide toolbar or any other UI element
+                    // Scroll down, hide toolbar, bottomAppBar, and FAB
                     ((MainActivity) getActivity()).hideToolbar();
+                    ((MainActivity) getActivity()).hideBottomAppBar();
+                    ((MainActivity) getActivity()).hideFloatingActionButton();
+
                 } else if (scrollY < oldScrollY) {
-                    // Scroll up, show toolbar or any other UI element
+                    // Scroll up, show toolbar, bottom navigation, and FAB
                     ((MainActivity) getActivity()).showToolbar();
+                    ((MainActivity) getActivity()).showBottomAppBar();
+                    ((MainActivity) getActivity()).showFloatingActionButton();
+
                 }
             }
         });

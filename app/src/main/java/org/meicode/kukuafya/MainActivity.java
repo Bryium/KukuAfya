@@ -21,6 +21,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_drawer);
+        View BottomAppBar = findViewById(R.id.bottomAppBar);
 
         //toolbar
         toolbar = findViewById(R.id.toolbar);
@@ -90,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         userEmailTextView.setText(userEmail);
 
 
-        
+
         // Handle click event
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -242,6 +245,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void showToolbar() {
         if (getSupportActionBar() != null) {
             getSupportActionBar().show();
+        }
+    }
+
+    // Hide and show bottom app bar methods
+    public void hideBottomAppBar() {
+        BottomAppBar bottomAppBar = findViewById(R.id.bottomAppBar); // Retrieve the BottomAppBar instance from the layout
+        if (bottomAppBar != null && bottomAppBar.getVisibility() == View.VISIBLE) { // Check if it's visible
+            bottomAppBar.setVisibility(View.GONE); // Hide the BottomAppBar
+        }
+    }
+
+    public void showBottomAppBar() {
+        BottomAppBar bottomAppBar = findViewById(R.id.bottomAppBar); // Retrieve the BottomAppBar instance from the layout
+        if (bottomAppBar != null && bottomAppBar.getVisibility() != View.VISIBLE) { // Check if it's not visible
+            bottomAppBar.setVisibility(View.VISIBLE); // Show the BottomAppBar
+        }
+    }
+
+
+    // Hide and show floating action button methods
+    public void hideFloatingActionButton() {
+        FloatingActionButton fab = findViewById(R.id.fab);
+        if (fab != null && fab.getVisibility() == View.VISIBLE) {
+            fab.setVisibility(View.GONE);
+        }
+    }
+
+    public void showFloatingActionButton() {
+        FloatingActionButton fab = findViewById(R.id.fab);
+        if (fab != null && fab.getVisibility() != View.VISIBLE) {
+            fab.setVisibility(View.VISIBLE);
         }
     }
 
