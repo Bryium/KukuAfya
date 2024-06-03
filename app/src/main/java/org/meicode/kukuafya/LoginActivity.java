@@ -17,6 +17,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -61,22 +64,36 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        // Login successful
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
-                            // Save user information to SharedPreferences
-                            saveUserInfo(user.getDisplayName(), email);
+                            // Retrieve user information from Firebase
+                            retrieveUserInfo(user.getUid(), email);
                         }
-                        navigateToMainActivity();
                     } else {
-                        // Login failed
                         handleLoginFailure(task.getException());
                     }
                 });
     }
 
+    private void retrieveUserInfo(String userId, String email) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(userId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String username = documentSnapshot.getString("username");
+                        // Save user info to SharedPreferences
+                        saveUserInfo(username, email);
+                        navigateToMainActivity();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "User data not found.", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(LoginActivity.this, "Error retrieving user data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
     private void navigateToMainActivity() {
-        // Navigate to MainActivity
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
@@ -93,7 +110,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void saveUserInfo(String username, String email) {
-        // Save user information to SharedPreferences
         SharedPreferences sharedPref = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("USER_NAME", username);

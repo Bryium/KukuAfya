@@ -89,7 +89,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         usernameTextView.setText(userName);
         userEmailTextView.setText(userEmail);
 
-        // Handle click event
+
+        
         // Handle click event
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

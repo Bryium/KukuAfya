@@ -11,11 +11,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -25,7 +28,6 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_register);
 
         mAuth = FirebaseAuth.getInstance();
@@ -64,47 +66,39 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void registerUser(String username, String email, String password) {
-        mAuth.fetchSignInMethodsForEmail(email)
-                .addOnCompleteListener(task -> {
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(RegisterActivity.this, task -> {
                     if (task.isSuccessful()) {
-                        if (task.getResult().getSignInMethods() != null && task.getResult().getSignInMethods().size() > 0) {
-                            // Email is already registered
-                            Toast.makeText(RegisterActivity.this, "This email is already registered.", Toast.LENGTH_SHORT).show();
-                        } else {
-                            // Email is not registered, proceed with registration
-                            mAuth.createUserWithEmailAndPassword(email, password)
-                                    .addOnCompleteListener(RegisterActivity.this, registrationTask -> {
-                                        if (registrationTask.isSuccessful()) {
-                                            FirebaseUser user = mAuth.getCurrentUser();
-                                            if (user != null) {
-                                                // Save user information to SharedPreferences
-                                                saveUserInfo(username, email);
-                                            }
-                                            // Display toast message for successful registration
-                                            Toast.makeText(RegisterActivity.this, "Registered successfully", Toast.LENGTH_SHORT).show();
-                                            // Redirect to login page
-                                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-                                        } else {
-                                            // Registration failed
-                                            Toast.makeText(RegisterActivity.this, "Registration failed: " + registrationTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null) {
+                            // Save user information to Firebase
+                            saveUserInfoToFirebase(user.getUid(), username, email);
                         }
                     } else {
-                        // Error occurred while fetching sign-in methods
-                        Toast.makeText(RegisterActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "Registration failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-
-        finish();
     }
 
-    private void saveUserInfo(String username, String email) {
-        // Save user information to SharedPreferences
-        SharedPreferences sharedPref = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("USER_NAME", username);
-        editor.putString("USER_EMAIL", email);
-        editor.apply();
+    private void saveUserInfoToFirebase(String userId, String username, String email) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> user = new HashMap<>();
+        user.put("username", username);
+        user.put("email", email);
+
+        db.collection("users").document(userId)
+                .set(user)
+                .addOnSuccessListener(aVoid -> {
+                    // User info saved successfully
+                    Toast.makeText(RegisterActivity.this, "User information saved successfully", Toast.LENGTH_SHORT).show();
+                    // Redirect to login page after successful registration
+                    startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    // Error saving user info
+                    Toast.makeText(RegisterActivity.this, "Error saving user information: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
+
 }
