@@ -1,6 +1,8 @@
 package org.meicode.kukuafya;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -60,6 +62,11 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Login successful
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null) {
+                            // Save user information to SharedPreferences
+                            saveUserInfo(user.getDisplayName(), email);
+                        }
                         navigateToMainActivity();
                     } else {
                         // Login failed
@@ -83,5 +90,14 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             Toast.makeText(LoginActivity.this, "Login failed. Please try again.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void saveUserInfo(String username, String email) {
+        // Save user information to SharedPreferences
+        SharedPreferences sharedPref = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("USER_NAME", username);
+        editor.putString("USER_EMAIL", email);
+        editor.apply();
     }
 }
