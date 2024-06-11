@@ -14,6 +14,7 @@
 
         <Button
             android:id="@+id/btnOpenCamera"
+            android:drawableLeft="@drawable/baseline_camera_alt_24"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Open Camera"
@@ -30,6 +31,7 @@
         <Button
             android:id="@+id/btnViewImages"
             android:layout_width="wrap_content"
+            android:drawableLeft="@drawable/baseline_photo_24"
             android:layout_height="wrap_content"
             android:text="View Images"
             android:layout_marginTop="16dp"/>
