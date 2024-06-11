@@ -27,10 +27,9 @@ import androidx.fragment.app.Fragment;
 public class ImportFragment extends Fragment {
 
     private static final int REQUEST_CAMERA_PERMISSION = 100;
-
     private Button btnOpenCamera;
+    private Button btnViewImages;
     private ImageView imageView;
-
     private ActivityResultLauncher<Intent> cameraLauncher;
 
     @Nullable
@@ -40,11 +39,20 @@ public class ImportFragment extends Fragment {
 
         btnOpenCamera = view.findViewById(R.id.btnOpenCamera);
         imageView = view.findViewById(R.id.imageView);
+        btnViewImages = view.findViewById(R.id.btnViewImages);
 
         btnOpenCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openCamera();
+            }
+        });
+
+        btnViewImages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ViewImagesActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -62,6 +70,7 @@ public class ImportFragment extends Fragment {
                                     if (imageBitmap != null) {
                                         imageView.setVisibility(View.VISIBLE);
                                         imageView.setImageBitmap(imageBitmap);
+                                        saveImageToDatabase(imageBitmap);
                                     }
                                 } else {
                                     Toast.makeText(getActivity(), "Failed to capture image", Toast.LENGTH_SHORT).show();
@@ -95,5 +104,10 @@ public class ImportFragment extends Fragment {
                 Toast.makeText(getActivity(), "Camera permission denied", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void saveImageToDatabase(Bitmap bitmap) {
+        DatabaseHelper databaseHelper = new DatabaseHelper(getActivity());
+        databaseHelper.insertImage(bitmap);
     }
 }
