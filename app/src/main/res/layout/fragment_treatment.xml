@@ -6,13 +6,11 @@
     android:background="@color/lavender"
     tools:context=".TreatmentFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <!-- WebView to display YouTube video -->
+    <WebView
+        android:id="@+id/webView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Treatment"
-        android:gravity="center"
-        android:textSize="30sp"
-        android:textColor="@color/white"/>
+        android:padding="8dp" />
 
 </FrameLayout>
