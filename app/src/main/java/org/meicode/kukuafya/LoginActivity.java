@@ -85,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
                         saveUserInfo(username, email);
                         navigateToMainActivity();
                     } else {
-                        Toast.makeText(LoginActivity.this, "User data not found.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "User not found.", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
