@@ -10,8 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-
-
 public class AboutFragment extends Fragment {
 
     @Nullable
@@ -24,20 +22,9 @@ public class AboutFragment extends Fragment {
         TextView appDescription = view.findViewById(R.id.textview);
 
         // Set the text for the TextView
-        String descriptionText = "Embark on an innovative journey with KukuAfya, a cutting-edge "
-                + "Android application designed to revolutionize chicken health management. "
-                + "Utilizing the agile methodology, our development process ensures flexibility and adaptability, allowing "
-                + "for swift iterations and seamless updates. Powered by the robust Java language, KukuAfya "
-                + "delivers a seamless user experience with its intuitive interface and efficient performance. "
-                + "Integrating Machine Learning components developed in Python, the app boasts "
-                + "advanced diagnostic capabilities, enabling accurate and timely disease detection in "
-                + "livestock. Agile methodology was chosen for its inherent advantages, including "
-                + "rapid development cycles, continuous stakeholder feedback, and enhanced collaboration "
-                + "among team members. Join us in harnessing the power of technology to transform "
-                + "animal healthcare and promote the well-being of livestock worldwide with KukuAfya.";
+        String descriptionText = "Embark on an extraordinary journey with KukuAfya, a state-of-the-art Android application meticulously crafted with Java to revolutionize global chicken health management. Engineered for optimal efficiency and user-friendliness, KukuAfya seamlessly integrates cutting-edge Machine Learning components developed in Python to provide precise and timely disease diagnostics for livestock worldwide. With its intuitive interface, robust performance, and scalable architecture, KukuAfya empowers farmers, veterinarians, and agricultural enterprises with invaluable insights, ensuring proactive and sustainable animal healthcare management. Join us in harnessing the transformative power of technology with KukuAfya, setting new standards in livestock health and agriculture innovation on a global scale.";
 
         appDescription.setText(descriptionText);
-
 
         return view;
     }

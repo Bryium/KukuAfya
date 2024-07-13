@@ -15,15 +15,16 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"> <!-- Center contents vertically -->
+            android:gravity="center"
+            android:orientation="vertical"> <!-- Center contents vertically -->
 
             <TextView
                 android:id="@+id/textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="351dp"
+                android:layout_height="match_parent"
                 android:background="@drawable/textview_background"
                 android:elevation="4dp"
+                android:layout_marginTop="70dp"
                 android:lineSpacingExtra="8dp"
                 android:padding="24dp"
                 android:text="About"
