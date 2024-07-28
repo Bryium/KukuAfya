@@ -3,6 +3,8 @@ package org.meicode.kukuafya;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -15,6 +17,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,14 +25,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.InputStream;
+
 public class GalleryFragment extends Fragment {
 
     private static final int REQUEST_MEDIA_IMAGES_PERMISSION = 101;
-    private static final int REQUEST_PICK_IMAGE = 1;
 
     private Button btnOpenGallery;
     private ImageView imageView;
-
     private ActivityResultLauncher<String> galleryLauncher;
 
     @Nullable
@@ -53,7 +56,7 @@ public class GalleryFragment extends Fragment {
                     @Override
                     public void onActivityResult(Uri uri) {
                         if (uri != null) {
-                            imageView.setImageURI(uri);
+                            handleImage(uri);
                         } else {
                             Toast.makeText(getActivity(), "Failed to load image", Toast.LENGTH_SHORT).show();
                         }
@@ -81,5 +84,26 @@ public class GalleryFragment extends Fragment {
                 Toast.makeText(getActivity(), "Media permission denied", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void handleImage(Uri imageUri) {
+        try {
+            InputStream inputStream = getActivity().getContentResolver().openInputStream(imageUri);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            if (bitmap != null) {
+                imageView.setVisibility(View.VISIBLE);
+                imageView.setImageBitmap(bitmap);
+                saveImageToDatabase(bitmap);
+            } else {
+                Toast.makeText(getActivity(), "Failed to decode image", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), "Error handling image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void saveImageToDatabase(Bitmap bitmap) {
+        DatabaseHelper databaseHelper = new DatabaseHelper(getActivity());
+        databaseHelper.insertImage(bitmap);
     }
 }
