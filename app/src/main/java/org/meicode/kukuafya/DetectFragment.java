@@ -21,12 +21,12 @@ import androidx.fragment.app.Fragment;
 
 import org.meicode.kukuafya.ml.ChickenDisease9852Quantized;
 import org.tensorflow.lite.DataType;
-import org.tensorflow.lite.support.image.TensorImage;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -155,10 +155,6 @@ public class DetectFragment extends Fragment {
         }
     }
 
-    private void logToFile(String s) {
-    }
-
-
     private int getMax(float[] arr) {
         int maxIndex = 0;
         for (int i = 1; i < arr.length; i++) {
@@ -167,6 +163,15 @@ public class DetectFragment extends Fragment {
             }
         }
         return maxIndex;
+    }
+
+    private List<String> loadClassLabels() {
+        // Ensure this list matches the model's output indices
+        return Arrays.asList("Coccidiosis", "Healthy", "Newcastle Disease", "Salmonella");
+    }
+
+    private void logToFile(String s) {
+        // Implement logging if necessary
     }
 
     @Override
@@ -193,10 +198,5 @@ public class DetectFragment extends Fragment {
                 }
             }
         }
-    }
-
-    private List<String> loadClassLabels() {
-        // Implement this method to return the list of class labels
-        return null;
     }
 }
