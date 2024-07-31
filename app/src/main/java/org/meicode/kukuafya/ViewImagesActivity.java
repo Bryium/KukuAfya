@@ -9,25 +9,30 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.GridLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 public class ViewImagesActivity extends AppCompatActivity {
 
-    private LinearLayout linearLayout;
+    private GridLayout gridLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_images);
 
-        linearLayout = findViewById(R.id.linearLayout);
+        gridLayout = findViewById(R.id.gridLayout);
+        gridLayout.setColumnCount(3); // Set number of columns
 
         loadImagesFromDatabase();
     }
@@ -38,21 +43,30 @@ public class ViewImagesActivity extends AppCompatActivity {
 
         for (Bitmap image : images) {
             ImageView imageView = new ImageView(this);
-            imageView.setImageBitmap(resizeBitmap(image, 70, 70));
-            imageView.setLayoutParams(new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            ));
+            imageView.setImageBitmap(resizeBitmap(image, 200, 200));
+            imageView.setLayoutParams(new GridLayout.LayoutParams());
             imageView.setPadding(4, 4, 4, 4);
             imageView.setOnClickListener(v -> {
                 // Convert Bitmap to Uri and send it back to DetectFragment
                 Uri imageUri = getImageUri(image);
-                Intent resultIntent = new Intent();
-                resultIntent.setData(imageUri);
-                setResult(RESULT_OK, resultIntent);
-                finish();
+                if (imageUri != null) {
+                    Intent resultIntent = new Intent();
+                    resultIntent.setData(imageUri);
+                    setResult(RESULT_OK, resultIntent);
+                    finish();
+                } else {
+                    Toast.makeText(this, "Failed to get image URI", Toast.LENGTH_SHORT).show();
+                }
             });
-            linearLayout.addView(imageView);
+
+            // Set layout parameters for each image view
+            GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+            params.width = GridLayout.LayoutParams.WRAP_CONTENT;
+            params.height = GridLayout.LayoutParams.WRAP_CONTENT;
+            params.setMargins(4, 4, 4, 4);
+            imageView.setLayoutParams(params);
+
+            gridLayout.addView(imageView);
         }
     }
 
@@ -61,17 +75,35 @@ public class ViewImagesActivity extends AppCompatActivity {
     }
 
     private Uri getImageUri(Bitmap bitmap) {
-        // Convert Bitmap to Uri and return it
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "Title", null);
-        return Uri.parse(path);  // Corrected from Url.parse to Uri.parse
+        OutputStream outputStream = null;
+        try {
+            // Create a temporary file to save the image
+            File imageFile = new File(getExternalFilesDir(null), "Title_" + System.currentTimeMillis() + ".jpg");
+            outputStream = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            outputStream.flush();
+
+            // Get the URI from the file
+            return Uri.fromFile(imageFile);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     private void showImageInDialog(Bitmap bitmap) {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_image);
-        dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        dialog.getWindow().setLayout(GridLayout.LayoutParams.MATCH_PARENT, GridLayout.LayoutParams.MATCH_PARENT);
         dialog.getWindow().setGravity(Gravity.CENTER);
 
         ImageView imageView = dialog.findViewById(R.id.dialogImageView);
