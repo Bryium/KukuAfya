@@ -1,5 +1,7 @@
 package org.meicode.kukuafya;
 
+
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,14 +21,15 @@ public class TreatmentFragment extends Fragment {
     private WebView webView;
 
     @Nullable
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // Replace R with the correct layout reference
         View view = inflater.inflate(R.layout.fragment_treatment, container, false);
 
         // Initialize WebView
         webView = view.findViewById(R.id.webView);
         WebSettings webSettings = webView.getSettings();
-
 
         webSettings.setJavaScriptEnabled(true); // Enable JavaScript (required for YouTube embeds)
         webView.setWebViewClient(new WebViewClient()); // Open links in the WebView itself
@@ -36,4 +39,5 @@ public class TreatmentFragment extends Fragment {
 
         return view;
     }
+
 }

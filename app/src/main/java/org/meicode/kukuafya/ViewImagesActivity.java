@@ -43,7 +43,7 @@ public class ViewImagesActivity extends AppCompatActivity {
 
         for (Bitmap image : images) {
             ImageView imageView = new ImageView(this);
-            imageView.setImageBitmap(resizeBitmap(image, 200, 200));
+            imageView.setImageBitmap(resizeBitmap(image, 200, 200)); // Adjust size as needed
             imageView.setLayoutParams(new GridLayout.LayoutParams());
             imageView.setPadding(4, 4, 4, 4);
             imageView.setOnClickListener(v -> {
