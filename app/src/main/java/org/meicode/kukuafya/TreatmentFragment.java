@@ -31,8 +31,8 @@ public class TreatmentFragment extends Fragment {
         webView = view.findViewById(R.id.webView);
         WebSettings webSettings = webView.getSettings();
 
-        webSettings.setJavaScriptEnabled(true); // Enable JavaScript (required for YouTube embeds)
-        webView.setWebViewClient(new WebViewClient()); // Open links in the WebView itself
+        webSettings.setJavaScriptEnabled(true);
+        webView.setWebViewClient(new WebViewClient());
 
         // Load YouTube video
         webView.loadUrl(YOUTUBE_VIDEO_URL);

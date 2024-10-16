@@ -1,5 +1,7 @@
 package org.meicode.kukuafya;
 
+import static android.app.PendingIntent.getActivity;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
