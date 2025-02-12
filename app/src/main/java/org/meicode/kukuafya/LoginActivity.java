@@ -14,6 +14,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -25,6 +30,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
@@ -33,6 +39,10 @@ public class LoginActivity extends AppCompatActivity {
     private EditText inputEmail, inputPassword;
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 100;
+
+    // Facebook login variables
+    private CallbackManager callbackManager;
+    private Button facebookButton;  // Facebook button reference
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,27 +56,26 @@ public class LoginActivity extends AppCompatActivity {
         Button loginButton = findViewById(R.id.btnlogin);
         TextView btn = findViewById(R.id.txtViewSignup);
         Button googleButton = findViewById(R.id.btnGoogle);
+        facebookButton = findViewById(R.id.btnFacebook);  // Facebook login button
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String email = inputEmail.getText().toString().trim();
-                String password = inputPassword.getText().toString().trim();
+        // Initialize Facebook SDK
+        callbackManager = CallbackManager.Factory.create();
 
-                if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
-                    Toast.makeText(LoginActivity.this, "Please enter both email and password", Toast.LENGTH_SHORT).show();
-                } else {
-                    loginUser(email, password);
-                }
+        // Set the permissions needed for Facebook login
+        facebookButton.setOnClickListener(v -> handleFacebookLogin());
+
+        loginButton.setOnClickListener(v -> {
+            String email = inputEmail.getText().toString().trim();
+            String password = inputPassword.getText().toString().trim();
+
+            if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
+                Toast.makeText(LoginActivity.this, "Please enter both email and password", Toast.LENGTH_SHORT).show();
+            } else {
+                loginUser(email, password);
             }
         });
 
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-            }
-        });
+        btn.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, RegisterActivity.class)));
 
         // Google Sign-In configuration
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -79,11 +88,49 @@ public class LoginActivity extends AppCompatActivity {
         googleButton.setOnClickListener(v -> signInWithGoogle());
     }
 
+    // Handle Facebook login
+    private void handleFacebookLogin() {
+        // Initialize Facebook Login button (assuming it's already connected to a Facebook app)
+        LoginButton fbLoginButton = new LoginButton(this);
+        fbLoginButton.setPermissions("email", "public_profile");
+        fbLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                // Handle successful login
+                AuthCredential credential = FacebookAuthProvider.getCredential(loginResult.getAccessToken().getToken());
+                mAuth.signInWithCredential(credential).addOnCompleteListener(LoginActivity.this, task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null) {
+                            saveUserInfo(user.getDisplayName(), user.getEmail());
+                            navigateToMainActivity();
+                        }
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onCancel() {
+                // Handle cancellation
+                Toast.makeText(LoginActivity.this, "Login canceled", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                // Handle error
+                Toast.makeText(LoginActivity.this, "Error during Facebook login", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        fbLoginButton.performClick();
+    }
+
+    // Handle Google sign-in
     private void signInWithGoogle() {
-        // Sign out the user first before starting the sign-in process
         mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
             if (task.isSuccessful()) {
-                // Proceed with the sign-in flow after signing out
                 Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                 startActivityForResult(signInIntent, RC_SIGN_IN);
             } else {
@@ -95,6 +142,8 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        // Pass the activity result to Facebook SDK
+        callbackManager.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SIGN_IN) {
             try {
@@ -110,50 +159,45 @@ public class LoginActivity extends AppCompatActivity {
 
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        if (user != null) {
-                            // Directly save user info and navigate to MainActivity
-                            saveUserInfo(user.getDisplayName(), user.getEmail());
-                            navigateToMainActivity();
-                        }
-                    } else {
-                        Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        mAuth.signInWithCredential(credential).addOnCompleteListener(this, task -> {
+            if (task.isSuccessful()) {
+                FirebaseUser user = mAuth.getCurrentUser();
+                if (user != null) {
+                    saveUserInfo(user.getDisplayName(), user.getEmail());
+                    navigateToMainActivity();
+                }
+            } else {
+                Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void loginUser(String email, String password) {
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        if (user != null) {
-                            retrieveUserInfo(user.getUid(), email);
-                        }
-                    } else {
-                        handleLoginFailure(task.getException());
-                    }
-                });
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, task -> {
+            if (task.isSuccessful()) {
+                FirebaseUser user = mAuth.getCurrentUser();
+                if (user != null) {
+                    retrieveUserInfo(user.getUid(), email);
+                }
+            } else {
+                handleLoginFailure(task.getException());
+            }
+        });
     }
 
     private void retrieveUserInfo(String userId, String email) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("users").document(userId).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        String username = documentSnapshot.getString("username");
-                        saveUserInfo(username, email);
-                        navigateToMainActivity();
-                    } else {
-                        Toast.makeText(LoginActivity.this, "User not found.", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(LoginActivity.this, "Error retrieving user data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+        db.collection("users").document(userId).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                String username = documentSnapshot.getString("username");
+                saveUserInfo(username, email);
+                navigateToMainActivity();
+            } else {
+                Toast.makeText(LoginActivity.this, "User not found.", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(e -> {
+            Toast.makeText(LoginActivity.this, "Error retrieving user data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        });
     }
 
     private void navigateToMainActivity() {
