@@ -80,8 +80,16 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void signInWithGoogle() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        // Sign out the user first before starting the sign-in process
+        mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
+            if (task.isSuccessful()) {
+                // Proceed with the sign-in flow after signing out
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                startActivityForResult(signInIntent, RC_SIGN_IN);
+            } else {
+                Toast.makeText(LoginActivity.this, "Error signing out", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
