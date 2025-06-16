@@ -27,6 +27,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
+        <!-- Closing and opening of bottom navigation -->
+
+
         <!-- Facebook SDK meta-data -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

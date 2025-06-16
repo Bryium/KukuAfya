@@ -62,11 +62,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //floating action bar
         FloatingActionButton fab = findViewById(R.id.fab);
 
-
-
-
-
-
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, binding.toolbar, R.string.open_nav, R.string.close_nav);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
@@ -75,6 +70,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         fragmentManager = getSupportFragmentManager();
         handler = new Handler();
+
+      //  Opening and closing of bottom nav bar when initializing input
+        final View rootView = findViewById(android.R.id.content);
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            int screenHeight = rootView.getRootView().getHeight();
+            int keypadHeight = screenHeight - rootView.getHeight();
+            boolean isOpen = keypadHeight > screenHeight * 0.15;
+
+            BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
+            bottomNav.setVisibility(isOpen ? View.GONE : View.VISIBLE);
+        });
+
 
 
 

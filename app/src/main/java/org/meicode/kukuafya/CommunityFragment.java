@@ -92,7 +92,7 @@ public class CommunityFragment extends Fragment {
                 }
 
                 if (TextUtils.isEmpty(currentUsername)) {
-                    currentUsername = uid; // Fallback to UID
+                    currentUsername = uid;
                 }
 
                 setupRecycler(currentUsername);
