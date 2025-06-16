@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/bg_received_message"
         android:padding="10dp"
-        android:textAppearance="?atttr/textApperanceBody2"
+        android:textAppearance="?attr/textAppearanceBody2"
         android:textColor="@android:color/black"/>
 
 </LinearLayout>
