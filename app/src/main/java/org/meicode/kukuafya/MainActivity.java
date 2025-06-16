@@ -250,16 +250,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     // Hide and show bottom app bar methods
     public void hideBottomAppBar() {
-        BottomAppBar bottomAppBar = findViewById(R.id.bottomAppBar); // Retrieve the BottomAppBar instance from the layout
-        if (bottomAppBar != null && bottomAppBar.getVisibility() == View.VISIBLE) { // Check if it's visible
-            bottomAppBar.setVisibility(View.GONE); // Hide the BottomAppBar
+        BottomAppBar bottomAppBar = findViewById(R.id.bottomAppBar);
+        if (bottomAppBar != null && bottomAppBar.getVisibility() == View.VISIBLE) {
+            bottomAppBar.setVisibility(View.GONE);
         }
     }
 
     public void showBottomAppBar() {
-        BottomAppBar bottomAppBar = findViewById(R.id.bottomAppBar); // Retrieve the BottomAppBar instance from the layout
-        if (bottomAppBar != null && bottomAppBar.getVisibility() != View.VISIBLE) { // Check if it's not visible
-            bottomAppBar.setVisibility(View.VISIBLE); // Show the BottomAppBar
+        BottomAppBar bottomAppBar = findViewById(R.id.bottomAppBar);
+        if (bottomAppBar != null && bottomAppBar.getVisibility() != View.VISIBLE) {
+            bottomAppBar.setVisibility(View.VISIBLE);
         }
     }
 
