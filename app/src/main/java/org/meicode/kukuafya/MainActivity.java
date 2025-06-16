@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private static final String PREFS_NAME = "UserPrefs";
     private static final String LAST_ACTIVE_TIME = "lastActiveTime";
-    private static final long TIMEOUT_DURATION = 30 * 1000; // 30 seconds
+    private static final long TIMEOUT_DURATION = 30 * 1000;
 
 
 
